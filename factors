@@ -1,40 +1,55 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <math.h>
+#!/usr/bin/python3
 
-bool factorize(unsigned long long num, unsigned long long* p, unsigned long long* q) {
-    for (unsigned long long i = 2; i <= sqrt(num); i++) {
-        if (num % i == 0) {
-            *p = i;
-            *q = num / i;
-            return true;
-        }
-    }
-    return false;
-}
+import sys
+import time
 
-int main(int argc, char* argv[]) {
-    if (argc != 2) {
-        printf("Usage: %s <file>\n", argv[0]);
-        return 1;
-    }
 
-    FILE* file = fopen(argv[1], "r");
-    if (file == NULL) {
-        printf("File not found\n");
-        return 1;
-    }
+def factorize(num):
+    '''Takes a number as input.
+    Args:
+        num: input integer.
+    Return: A tuple of two factors if the number is not a prime.
+            None if the number is prime.
+    '''
+    for i in range(2, int(num**0.5)+1):
+        if num % i == 0:
+            return (i, num//i)
+    return None
 
-    unsigned long long num;
-    while (fscanf(file, "%llu", &num) == 1) {
-        unsigned long long p, q;
-        if (factorize(num, &p, &q)) {
-            printf("%llu=%llu*%llu\n", num, p, q);
-        }
-    }
 
-    fclose(file);
-    return 0;
-}
+if __name__ == "__main__":
+    '''Reads the input file.
+    '''
+    if len(sys.argv) != 2:
+        print("Usage: factors <file>")
+        exit()
+
+    input_file = sys.argv[1]
+
+    try:
+        with open(input_file, 'r') as f:
+            lines = f.readlines()
+    except FileNotFoundError:
+        print("File not found")
+        exit()
+
+    start_time = time.time()
+
+    '''loops over each line (which should contain one natural number per line),
+        and calls factorize on each number.
+        If factorize returns a tuple of factors,
+        it prints the factorization in the desired format.
+    '''
+    for line in lines:
+        num = int(line.strip())
+        factors = factorize(num)
+        if factors:
+            print(f"{num}={factors[0]}*{factors[1]}")
+
+        '''If the elapsed time exceeds 5 seconds,
+            the program exits with an error message.
+        '''
+        if time.time() - start_time > 5:
+            print("Time limit exceeded")
+            exit()
 
