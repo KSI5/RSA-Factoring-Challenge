@@ -1,5 +1,40 @@
-#!/usr/bin/python3
-from factors_functions import *
-if __name__ == '__main__':
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <math.h>
 
-    print(unix_time(print_factors))
+bool factorize(unsigned long long num, unsigned long long* p, unsigned long long* q) {
+    for (unsigned long long i = 2; i <= sqrt(num); i++) {
+        if (num % i == 0) {
+            *p = i;
+            *q = num / i;
+            return true;
+        }
+    }
+    return false;
+}
+
+int main(int argc, char* argv[]) {
+    if (argc != 2) {
+        printf("Usage: %s <file>\n", argv[0]);
+        return 1;
+    }
+
+    FILE* file = fopen(argv[1], "r");
+    if (file == NULL) {
+        printf("File not found\n");
+        return 1;
+    }
+
+    unsigned long long num;
+    while (fscanf(file, "%llu", &num) == 1) {
+        unsigned long long p, q;
+        if (factorize(num, &p, &q)) {
+            printf("%llu=%llu*%llu\n", num, p, q);
+        }
+    }
+
+    fclose(file);
+    return 0;
+}
+
