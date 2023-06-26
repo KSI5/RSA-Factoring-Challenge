@@ -8,13 +8,13 @@ def factorize(num):
     '''Takes a number as input.
     Args:
         num: input integer.
-    Return: A tuple of two factors if the number is not a prime.
-            None if the number is prime.
+    Return: A list of tuples, each containing a factorization pair (p, q).
     '''
-    for i in range(2, int(num**0.5)+1):
+    factors = []
+    for i in range(2, int(num**0.5) + 1):
         if num % i == 0:
-            return (i, num//i)
-    return None
+            factors.append((i, num // i))
+    return factors
 
 
 if __name__ == "__main__":
@@ -37,14 +37,16 @@ if __name__ == "__main__":
 
     '''loops over each line (which should contain one natural number per line),
         and calls factorize on each number.
-        If factorize returns a tuple of factors,
+        If factorize returns a list of factors,
         it prints the factorization in the desired format.
     '''
     for line in lines:
         num = int(line.strip())
         factors = factorize(num)
         if factors:
-            print(f"{num}={factors[0]}*{factors[1]}")
+            for factor in factors:
+                p, q = factor
+                print(f"{num}={p}*{q}")
 
         '''If the elapsed time exceeds 5 seconds,
             the program exits with an error message.
